@@ -13,11 +13,46 @@
   "type": "module",
   "main": "dist/broadutils.js",
   "scripts": {
-    "test": "bun test"
+    "build": "bunx tsgo",
+    "test": "bun test ./src/tests/node/",
+    "test:web": "bun run ./src/tests/web/index.html"
+  },
+  "exports": {
+    ".": {
+      "import": "dist/broadutils.js",
+      "types": "dist/broadutils.d.ts"
+    },
+    "./canvas": {
+      "import": "dist/canvas/canvas.js",
+      "types": "dist/canvas/canvas.d.ts"
+    },
+    "./data": {
+      "import": "dist/data/data.js",
+      "types": "dist/data/data.d.ts"
+    },
+    "./misc": {
+      "import": "dist/misc/misc.js",
+      "types": "dist/misc/misc.d.ts"
+    },
+    "./network": {
+      "import": "dist/network/network.js",
+      "types": "dist/network/network.d.ts"
+    },
+    "./validate": {
+      "import": "dist/validate/validate.js",
+      "types": "dist/validate/validate.d.ts"
+    },
+    "./types": {
+      "types": "dist/types/types.d.ts"
+    }
   },
   "dependencies": {},
   "devDependencies": {
     "@types/bun": "^1.3.3",
+    "@types/chai": "^5.2.3",
+    "@types/mocha": "^10.0.10",
+    "@typescript/native-preview": "^7.0.0-dev.20251213.1",
+    "chai": "^6.2.1",
     "prettier": "^3.7.3",
     "typescript": "^5.9.3"
   },
