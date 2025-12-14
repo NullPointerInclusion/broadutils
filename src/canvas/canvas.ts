@@ -59,35 +59,36 @@ export const createContextSnapshot = (context: CanvasRenderingContext2D): Contex
 
 export const applyContextSnapshot = (
   context: CanvasRenderingContext2D,
-  snapshot: ContextSnapshot,
+  snapshot: Partial<ContextSnapshot>,
 ): CanvasRenderingContext2D => {
-  context.direction = snapshot.direction;
-  context.fillStyle = snapshot.fillStyle;
-  context.filter = snapshot.filter;
-  context.font = snapshot.font;
-  context.fontKerning = snapshot.fontKerning;
-  context.fontStretch = snapshot.fontStretch;
-  context.fontVariantCaps = snapshot.fontVariantCaps;
-  context.globalAlpha = snapshot.globalAlpha;
-  context.globalCompositeOperation = snapshot.globalCompositeOperation;
-  context.imageSmoothingEnabled = snapshot.imageSmoothingEnabled;
-  context.imageSmoothingQuality = snapshot.imageSmoothingQuality;
-  context.letterSpacing = snapshot.letterSpacing;
-  context.lineCap = snapshot.lineCap;
-  context.lineDashOffset = snapshot.lineDashOffset;
-  context.lineJoin = snapshot.lineJoin;
-  context.lineWidth = snapshot.lineWidth;
-  context.miterLimit = snapshot.miterLimit;
-  context.shadowBlur = snapshot.shadowBlur;
-  context.shadowColor = snapshot.shadowColor;
-  context.shadowOffsetX = snapshot.shadowOffsetX;
-  context.shadowOffsetY = snapshot.shadowOffsetY;
-  context.strokeStyle = snapshot.strokeStyle;
-  context.textAlign = snapshot.textAlign;
-  context.textBaseline = snapshot.textBaseline;
-  context.textRendering = snapshot.textRendering;
-  context.wordSpacing = snapshot.wordSpacing;
-  context.setTransform(snapshot.transform);
+  context.direction = snapshot.direction ?? context.direction;
+  context.fillStyle = snapshot.fillStyle ?? context.fillStyle;
+  context.filter = snapshot.filter ?? context.filter;
+  context.font = snapshot.font ?? context.font;
+  context.fontKerning = snapshot.fontKerning ?? context.fontKerning;
+  context.fontStretch = snapshot.fontStretch ?? context.fontStretch;
+  context.fontVariantCaps = snapshot.fontVariantCaps ?? context.fontVariantCaps;
+  context.globalAlpha = snapshot.globalAlpha ?? context.globalAlpha;
+  context.globalCompositeOperation =
+    snapshot.globalCompositeOperation ?? context.globalCompositeOperation;
+  context.imageSmoothingEnabled = snapshot.imageSmoothingEnabled ?? context.imageSmoothingEnabled;
+  context.imageSmoothingQuality = snapshot.imageSmoothingQuality ?? context.imageSmoothingQuality;
+  context.letterSpacing = snapshot.letterSpacing ?? context.letterSpacing;
+  context.lineCap = snapshot.lineCap ?? context.lineCap;
+  context.lineDashOffset = snapshot.lineDashOffset ?? context.lineDashOffset;
+  context.lineJoin = snapshot.lineJoin ?? context.lineJoin;
+  context.lineWidth = snapshot.lineWidth ?? context.lineWidth;
+  context.miterLimit = snapshot.miterLimit ?? context.miterLimit;
+  context.shadowBlur = snapshot.shadowBlur ?? context.shadowBlur;
+  context.shadowColor = snapshot.shadowColor ?? context.shadowColor;
+  context.shadowOffsetX = snapshot.shadowOffsetX ?? context.shadowOffsetX;
+  context.shadowOffsetY = snapshot.shadowOffsetY ?? context.shadowOffsetY;
+  context.strokeStyle = snapshot.strokeStyle ?? context.strokeStyle;
+  context.textAlign = snapshot.textAlign ?? context.textAlign;
+  context.textBaseline = snapshot.textBaseline ?? context.textBaseline;
+  context.textRendering = snapshot.textRendering ?? context.textRendering;
+  context.wordSpacing = snapshot.wordSpacing ?? context.wordSpacing;
+  snapshot.transform && context.setTransform(snapshot.transform);
 
   return context;
 };
