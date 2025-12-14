@@ -19,31 +19,31 @@
   },
   "exports": {
     ".": {
-      "import": "dist/broadutils.js",
-      "types": "dist/broadutils.d.ts"
+      "import": "./dist/broadutils.js",
+      "types": "./dist/broadutils.d.ts"
     },
     "./canvas": {
-      "import": "dist/canvas/canvas.js",
-      "types": "dist/canvas/canvas.d.ts"
+      "import": "./dist/canvas/canvas.js",
+      "types": "./dist/canvas/canvas.d.ts"
     },
     "./data": {
-      "import": "dist/data/data.js",
-      "types": "dist/data/data.d.ts"
+      "import": "./dist/data/data.js",
+      "types": "./dist/data/data.d.ts"
     },
     "./misc": {
-      "import": "dist/misc/misc.js",
-      "types": "dist/misc/misc.d.ts"
+      "import": "./dist/misc/misc.js",
+      "types": "./dist/misc/misc.d.ts"
     },
     "./network": {
-      "import": "dist/network/network.js",
-      "types": "dist/network/network.d.ts"
+      "import": "./dist/network/network.js",
+      "types": "./dist/network/network.d.ts"
     },
     "./validate": {
-      "import": "dist/validate/validate.js",
-      "types": "dist/validate/validate.d.ts"
+      "import": "./dist/validate/validate.js",
+      "types": "./dist/validate/validate.d.ts"
     },
     "./types": {
-      "types": "dist/types/types.d.ts"
+      "types": "./dist/types/types.d.ts"
     }
   },
   "dependencies": {},
