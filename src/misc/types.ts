@@ -1,7 +1,7 @@
-import type { CallbackFunction } from "../types/types.ts";
+import type { CallbackFunctionOne } from "../types/types.ts";
 
 export interface Deferred<T> {
   promise: Promise<T>;
-  resolve: CallbackFunction<T>;
-  reject: CallbackFunction<unknown>;
+  resolve: CallbackFunctionOne<T>;
+  reject: CallbackFunctionOne<unknown>;
 }
