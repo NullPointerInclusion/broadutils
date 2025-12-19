@@ -1,3 +1,8 @@
+export type Average = {
+  (...values: number[]): number;
+  (values: Iterable<number>): number;
+};
+
 export type MinOrMax = {
   (...values: number[]): number;
   (...values: bigint[]): bigint;

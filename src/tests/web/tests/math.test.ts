@@ -1,7 +1,7 @@
 /// <reference types="mocha" />
 
 import { expect } from "chai";
-import { min, max, clamp, constrain, convert } from "../../../math/math.ts";
+import { min, max, clamp, constrain, convert, average } from "../../../math/math.ts";
 
 describe("Math utilities", () => {
   describe("min", () => {
@@ -79,6 +79,27 @@ describe("Math utilities", () => {
       expect(constrain(10, 0, 10)).to.equal(1);
       expect(constrain(-5, 0, 10)).to.equal(0);
       expect(constrain(15, 0, 10)).to.equal(1);
+    });
+  });
+
+  describe("average", () => {
+    it("calculates the average of numbers spread as arguments", () => {
+      expect(average(1, 2, 3, 4, 5)).to.equal(3);
+      expect(average(10, 20)).to.equal(15);
+    });
+
+    it("calculates the average of numbers in an array", () => {
+      expect(average([1, 2, 3, 4, 5])).to.equal(3);
+      expect(average([10, 20])).to.equal(15);
+    });
+
+    it("calculates the average of a single number", () => {
+      expect(average(42)).to.equal(42);
+    });
+
+    it("returns 0 for empty input", () => {
+      expect(average()).to.equal(0);
+      expect(average([])).to.equal(0);
     });
   });
 

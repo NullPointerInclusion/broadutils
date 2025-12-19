@@ -59,6 +59,22 @@ export const clamp = (value, min, max) => {
 export const constrain = (value, low, high) => {
     return Math.max(Math.min((value - low) / (high - low), 1), 0);
 };
+export const average = (...values) => {
+    if (values.length === 0)
+        return 0;
+    let _values;
+    let sum = 0;
+    let length = 0;
+    if (typeof values[0] === "number") {
+        _values = values;
+    }
+    else {
+        _values = values[0];
+    }
+    for (const value of _values)
+        ((sum += value), ++length);
+    return length === 0 ? 0 : sum / length;
+};
 export const convert = (() => {
     const _convert = {
         angle: {

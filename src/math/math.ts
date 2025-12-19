@@ -1,5 +1,5 @@
 import { nonNullable } from "../validate/validate.ts";
-import type { Clamp, Constrain, Convert, MinOrMax } from "./types.ts";
+import type { Average, Clamp, Constrain, Convert, MinOrMax } from "./types.ts";
 
 export const min: MinOrMax = <T extends number | bigint>(...values: T[]): T => {
   let minNumber: number | null = null;
@@ -65,6 +65,23 @@ export const clamp: Clamp = <T extends number | bigint>(value: T, min: T, max: T
 
 export const constrain: Constrain = (value, low, high) => {
   return Math.max(Math.min((value - low) / (high - low), 1), 0);
+};
+
+export const average: Average = (...values: [Iterable<number>] | number[]) => {
+  if (values.length === 0) return 0;
+
+  let _values: Iterable<number>;
+  let sum = 0;
+  let length = 0;
+
+  if (typeof values[0] === "number") {
+    _values = values as number[];
+  } else {
+    _values = values[0] as Iterable<number>;
+  }
+
+  for (const value of _values) ((sum += value), ++length);
+  return length === 0 ? 0 : sum / length;
 };
 
 export const convert: Convert = (() => {
