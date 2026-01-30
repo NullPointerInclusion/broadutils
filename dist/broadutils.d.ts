@@ -3,5 +3,5 @@ export declare const data: typeof import("./data/data.ts");
 export declare const misc: typeof import("./misc/misc.ts");
 export declare const network: typeof import("./network/network.ts");
 export declare const validate: typeof import("./validate/validate.ts");
-export * from "./types/types.ts";
+export * as Types from "./types/types.ts";
 //# sourceMappingURL=broadutils.d.ts.map

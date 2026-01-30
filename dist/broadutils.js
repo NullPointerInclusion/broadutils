@@ -3,5 +3,5 @@ export const data = await import("./data/data.js");
 export const misc = await import("./misc/misc.js");
 export const network = await import("./network/network.js");
 export const validate = await import("./validate/validate.js");
-export * from "./types/types.js";
+export * as Types from "./types/types.js";
 //# sourceMappingURL=broadutils.js.map
