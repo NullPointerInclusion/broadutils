@@ -8,8 +8,8 @@ export interface ArrayUtils {
         <T extends unknown[], Appended>(target: T, ...sources: Appended[]): [...T, ...Appended[]];
     };
     compare: <T, U>(a: T[], b: U[], compareFn?: (a: T, b: U) => number) => -1 | 0 | 1;
-    padStart: <T extends unknown[]>(value: T[], length: number, padWith?: unknown) => T[];
-    padEnd: <T extends unknown[]>(value: T[], length: number, padWith?: unknown) => T[];
+    padStart: <T extends unknown[]>(value: T, length: number, padWith?: unknown) => T;
+    padEnd: <T extends unknown[]>(value: T, length: number, padWith?: unknown) => T;
     toReversed: <T>(value: T[]) => T[];
 }
 export interface ObjectUtils {
