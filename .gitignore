@@ -141,4 +141,5 @@ vite.config.ts.timestamp-*
 # Custom
 .vscode/
 .github/copilot-instructions.md
+AGENTS.md
 !dist/

@@ -1,8 +1,8 @@
 {
   "name": "broadutils",
-  "version": "0.0.0-alpha0",
+  "version": "0.0.0-alpha1",
   "description": "A package providing utilities covering a wide range of use cases.",
-  "homepage": "https://github.com/natsie/broadutils#readme",
+  "homepage": "https://github.com/NullPointerInclusion/broadutils#readme",
   "author": "Oghenevwegba Obire",
   "license": "MIT",
   "keywords": [
@@ -15,7 +15,7 @@
   "scripts": {
     "build": "bun run ./scripts/build.ts",
     "test": "bun test ./src/tests/node/",
-    "test:web": "bun run ./src/tests/web/index.html"
+    "test:web": "bunx vite"
   },
   "exports": {
     ".": {
@@ -54,13 +54,14 @@
     "@typescript/native-preview": "^7.0.0-dev.20251213.1",
     "chai": "^6.2.1",
     "prettier": "^3.7.3",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
   },
   "bugs": {
-    "url": "https://github.com/natsie/broadutils/issues"
+    "url": "https://github.com/NullPointerInclusion/broadutils/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/natsie/broadutils.git"
+    "url": "git+https://github.com/NullPointerInclusion/broadutils.git"
   }
 }

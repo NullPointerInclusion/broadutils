@@ -1,4 +1,5 @@
-import type { DataUrlSource, ObjectUtils, StringUtils } from "./types.ts";
+import { nonNullable } from "../validate/validate.ts";
+import type { ArrayUtils, DataUrlSource, ObjectUtils, StringUtils } from "./types.ts";
 
 export const convertToDataUrl = async (
   source: DataUrlSource,
@@ -22,6 +23,48 @@ export const convertToDataUrl = async (
     fileReader.onerror = () => reject(fileReader.error);
     fileReader.readAsDataURL(blob);
   });
+};
+
+const arrayCompare = (a: any, b: any): number => {
+  if (Array.isArray(a) && Array.isArray(b)) return array.compare(a, b);
+  if (typeof a === "number" && typeof b === "number") {
+    return (a === b ? 0 : +(a > b) - 1 || 1) as -1 | 0 | 1;
+  }
+
+  const _a = String(a);
+  const _b = String(b);
+
+  return (_a === _b ? 0 : +(_a > _b) - 1 || 1) as -1 | 0 | 1;
+};
+
+export const array: ArrayUtils = {
+  append: <T extends unknown[], Appended>(
+    target: T,
+    ...sources: Appended[][]
+  ): [...T, ...Appended[]] => {
+    const result = target as unknown as [...T, ...Appended[]];
+    for (const source of sources) result.push(...source);
+    return result;
+  },
+  compare: <T, U>(a: T[], b: U[], compareFn = arrayCompare): -1 | 0 | 1 => {
+    if (a.length < b.length) return -1;
+    if (b.length < a.length) return 1;
+    for (let i = 0; i < a.length; i++) {
+      const result = compareFn(a[i], b[i]);
+      if (result) return result < 0 ? -1 : 1;
+    }
+
+    return 0;
+  },
+  padStart: (value, length, padWith = 0) => {
+    while (value.length < length) value.unshift(padWith as any);
+    return value;
+  },
+  padEnd: (value, length, padWith = 0) => {
+    while (value.length < length) value.push(padWith as any);
+    return value;
+  },
+  toReversed: (value) => [...value].reverse(),
 };
 
 export const object: ObjectUtils = {

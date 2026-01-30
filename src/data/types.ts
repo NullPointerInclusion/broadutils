@@ -2,6 +2,25 @@ import type { IfExtendsThenElse, Nullish, OrArray } from "../types/types.ts";
 
 export type DataUrlSource = OrArray<Blob | ArrayBuffer | ArrayBufferView<ArrayBuffer>>;
 
+export interface ArrayUtils {
+  append: {
+    <T extends unknown[], A1 extends unknown[]>(target: T, ...sources: [A1]): [...T, ...A1];
+    <T extends unknown[], A1 extends unknown[], A2 extends unknown[]>(
+      target: T,
+      ...sources: [A1, A2]
+    ): [...T, ...A1, ...A2];
+    <T extends unknown[], A1 extends unknown[], A2 extends unknown[], A3 extends unknown[]>(
+      target: T,
+      ...sources: [A1, A2, A3]
+    ): [...T, ...A1, ...A2, ...A3];
+    <T extends unknown[], Appended>(target: T, ...sources: Appended[]): [...T, ...Appended[]];
+  };
+  compare: <T, U>(a: T[], b: U[], compareFn?: (a: T, b: U) => number) => -1 | 0 | 1;
+  padStart: <T extends unknown[]>(value: T[], length: number, padWith?: unknown) => T[];
+  padEnd: <T extends unknown[]>(value: T[], length: number, padWith?: unknown) => T[];
+  toReversed: <T>(value: T[]) => T[];
+}
+
 export interface ObjectUtils {
   omit<T extends {}, K extends keyof T>(obj: T, keys: K[]): Omit<T, K>;
   pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K>;

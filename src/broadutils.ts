@@ -4,4 +4,4 @@ export const misc = await import("./misc/misc.ts");
 export const network = await import("./network/network.ts");
 export const validate = await import("./validate/validate.ts");
 
-export * from "./types/types.ts";
+export * as Types from "./types/types.ts";
