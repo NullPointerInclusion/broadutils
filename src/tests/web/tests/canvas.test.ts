@@ -12,6 +12,16 @@ import {
   getImageData,
 } from "../../../canvas/canvas.ts";
 
+const compareImageData = (a: ImageData, b: ImageData): boolean => {
+  return (
+    a.width === b.width &&
+    a.height === b.height &&
+    a.colorSpace === b.colorSpace &&
+    a.data.length === b.data.length &&
+    a.data.every((v, i) => v === b.data[i])
+  );
+};
+
 const imageData = new ImageData(4, 2);
 imageData.data.set([255, 0, 0, 255], 0);
 imageData.data.set([128, 255, 128, 255], 4);
@@ -155,9 +165,9 @@ describe("Canvas utilities", () => {
       mirrorImageToCanvas(context, imageData);
       expect(canvas.width).to.equal(imageData.width);
       expect(canvas.height).to.equal(imageData.height);
-      expect(context.getImageData(0, 0, canvas.width, canvas.height).data).to.deep.equal(
-        imageData.data,
-      );
+      expect(
+        compareImageData(context.getImageData(0, 0, canvas.width, canvas.height), imageData),
+      ).to.equal(true);
     });
 
     it("mirrors canvas image to canvas", () => {
@@ -175,25 +185,36 @@ describe("Canvas utilities", () => {
   describe("getImage", () => {
     it("loads image from string URL", async () => {
       const img = await getImage(testImageUrl);
-
-      mirrorImageToCanvas(context, img);
       expect(img).to.be.instanceOf(HTMLImageElement);
-      expect(context.getImageData(0, 0, canvas.width, canvas.height)).to.deep.equal(imageData);
+      expect(
+        compareImageData(
+          mirrorImageToCanvas(context, img).getImageData(0, 0, canvas.width, canvas.height),
+          mirrorImageToCanvas(context, testImage).getImageData(0, 0, canvas.width, canvas.height),
+        ),
+      ).to.equal(true);
     });
 
     it("loads image from Blob", async () => {
       const img = await getImage(testImageBlob);
+      expect(img).to.be.instanceOf(HTMLImageElement);
       expect(
-        mirrorImageToCanvas(context, testImage).getImageData(0, 0, canvas.width, canvas.height),
-      ).to.deep.equal(
-        mirrorImageToCanvas(context, img).getImageData(0, 0, canvas.width, canvas.height),
-      );
+        compareImageData(
+          mirrorImageToCanvas(context, img).getImageData(0, 0, canvas.width, canvas.height),
+          mirrorImageToCanvas(context, testImage).getImageData(0, 0, canvas.width, canvas.height),
+        ),
+      ).to.equal(true);
     });
 
     it("loads image from ArrayBuffer", async () => {
       const buffer = await testImageBlob.arrayBuffer();
       const img = await getImage(buffer);
-      expect(imageData).to.deep.equal(await getImageData(img));
+      expect(img).to.be.instanceOf(HTMLImageElement);
+      expect(
+        compareImageData(
+          mirrorImageToCanvas(context, img).getImageData(0, 0, canvas.width, canvas.height),
+          mirrorImageToCanvas(context, testImage).getImageData(0, 0, canvas.width, canvas.height),
+        ),
+      ).to.equal(true);
     });
   });
 
@@ -201,7 +222,7 @@ describe("Canvas utilities", () => {
     it("gets ImageData from ImageData", async () => {
       const result = await getImageData(imageData);
       expect(result).to.be.instanceOf(ImageData);
-      expect(result).to.deep.equal(imageData);
+      expect(compareImageData(result, imageData)).to.equal(true);
     });
 
     it("gets ImageData from canvas", async () => {
@@ -210,17 +231,14 @@ describe("Canvas utilities", () => {
       context.drawImage(testImage, 0, 0);
       const result = await getImageData(canvas);
       expect(result).to.be.instanceOf(ImageData);
-      expect(result.width).to.equal(2);
-      expect(result.height).to.equal(1);
-      expect(result.data).to.deep.equal(
-        new Uint8ClampedArray([255, 0, 0, 255, 128, 255, 128, 255]),
-      );
+      expect([result.width, result.height]).to.deep.equal([2, 1]);
+      expect([...result.data]).to.deep.equal([255, 0, 0, 255, 128, 255, 128, 255]);
     });
 
     it("gets ImageData from data URL", async () => {
       const result = await getImageData(testImageUrl);
       expect(result).to.be.instanceOf(ImageData);
-      expect(result).to.deep.equal(imageData);
+      expect(compareImageData(result, imageData)).to.equal(true);
     });
   });
 });

@@ -3,17 +3,21 @@
 import { expect } from "chai";
 import { fetch } from "../../../network/network.ts";
 
+const URL_404 = "https://cdn.jsdelivr.net/npm/package-that-does-not-exist";
+
 describe("Network utilities", () => {
   describe("fetch", () => {
     it("fetches a resource from a URL", async () => {
-      const response = await fetch("https://jsonplaceholder.typicode.com/posts/1");
+      const response = await fetch(
+        "data:application/json;charset=utf-8;base64,eyJuYW1lIjoiQW5vbnltb3VzIn0=",
+      );
       const data = await response.json();
       expect(response).to.have.property("ok", true);
       expect(response).to.have.property("status", 200);
-      expect(data).to.have.property("id", 1);
+      expect(data).to.have.property("name", "Anonymous");
     }).timeout(5000);
     it("handles 404 errors", async () => {
-      const response = await fetch("https://cdn.jsdelivr.net/npm/package-that-does-not-exist");
+      const response = await fetch(URL_404);
       expect(response).to.have.property("ok", false);
       expect(response.status).to.be.greaterThanOrEqual(400);
       expect(response.status).to.be.lessThan(500);
@@ -62,7 +66,7 @@ describe("Network utilities", () => {
     }).timeout(5000);
     it("throws on 404 errors", async () => {
       try {
-        await fetch.ok("https://cdn.jsdelivr.net/npm/package-that-does-not-exist");
+        await fetch.ok(URL_404);
         expect.fail("Expected fetch.ok to throw an error for 404 response");
       } catch (error) {
         expect(error).to.be.instanceOf(Error);
@@ -79,7 +83,7 @@ describe("Network utilities", () => {
     }).timeout(5000);
     it("throws on 404 errors", async () => {
       try {
-        await fetch.arraybuffer("https://cdn.jsdelivr.net/npm/package-that-does-not-exist");
+        await fetch.arraybuffer(URL_404);
         expect.fail("Expected fetch.arraybuffer to throw an error for 404 response");
       } catch (error) {
         expect(error).to.be.instanceOf(Error);
@@ -96,7 +100,7 @@ describe("Network utilities", () => {
     }).timeout(5000);
     it("throws on 404 errors", async () => {
       try {
-        await fetch.blob("https://cdn.jsdelivr.net/npm/package-that-does-not-exist");
+        await fetch.blob(URL_404);
         expect.fail("Expected fetch.arraybuffer to throw an error for 404 response");
       } catch (error) {
         expect(error).to.be.instanceOf(Error);
@@ -112,7 +116,7 @@ describe("Network utilities", () => {
     }).timeout(5000);
     it("throws on 404 errors", async () => {
       try {
-        await fetch.bytes("https://cdn.jsdelivr.net/npm/package-that-does-not-exist");
+        await fetch.bytes(URL_404);
         expect.fail("Expected fetch.arraybuffer to throw an error for 404 response");
       } catch (error) {
         expect(error).to.be.instanceOf(Error);
@@ -152,9 +156,7 @@ describe("Network utilities", () => {
       expect(isSuccessfulResponseStatus(headers.status)).to.be.true;
     }).timeout(5000);
     it("return augumented response headers from a not okay response", async () => {
-      const headers = await fetch.headers(
-        "https://cdn.jsdelivr.net/npm/package-that-does-not-exist",
-      );
+      const headers = await fetch.headers(URL_404);
       verifyAugumentedHeaders(headers);
       expect(headers.ok).to.be.false;
       expect(isSuccessfulResponseStatus(headers.status)).to.be.false;
@@ -167,7 +169,7 @@ describe("Network utilities", () => {
     }).timeout(5000);
     it("throws on 404 errors", async () => {
       try {
-        await fetch.json("https://cdn.jsdelivr.net/npm/package-that-does-not-exist");
+        await fetch.json(URL_404);
         expect.fail("Expected fetch.json to throw an error for 404 response");
       } catch (error) {
         expect(error).to.be.instanceOf(Error);
@@ -188,7 +190,7 @@ describe("Network utilities", () => {
     }).timeout(5000);
     it("throws on 404 errors", async () => {
       try {
-        await fetch.stream("https://cdn.jsdelivr.net/npm/package-that-does-not-exist");
+        await fetch.stream(URL_404);
         expect.fail("Expected fetch.stream to throw an error for 404 response");
       } catch (error) {
         expect(error).to.be.instanceOf(Error);
@@ -203,7 +205,7 @@ describe("Network utilities", () => {
     }).timeout(5000);
     it("throws on 404 errors", async () => {
       try {
-        await fetch.text("https://cdn.jsdelivr.net/npm/package-that-does-not-exist");
+        await fetch.text(URL_404);
         expect.fail("Expected fetch.text to throw an error for 404 response");
       } catch (error) {
         expect(error).to.be.instanceOf(Error);
@@ -218,13 +220,13 @@ describe("Network utilities", () => {
        * from Pixabay
        *  (https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=417465)
        */
-      const audio = await fetch.audio("/assets/audio.mp3");
+      const audio = await fetch.audio("/src/tests/web/assets/audio.mp3");
       expect(audio).to.be.instanceOf(HTMLAudioElement);
       expect(audio.duration).to.equal(3.082438);
     }).timeout(5000);
     it("throws on 404 errors", async () => {
       try {
-        await fetch.audio("https://cdn.jsdelivr.net/npm/package-that-does-not-exist");
+        await fetch.audio(URL_404);
         expect.fail("Expected fetch.audio to throw an error for 404 response");
       } catch (error) {
         expect(error).to.be.instanceOf(Error);
@@ -239,14 +241,14 @@ describe("Network utilities", () => {
        * from Pixabay
        *  (https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=9766407)
        */
-      const image = await fetch.image("/assets/image.png");
+      const image = await fetch.image("/src/tests/web/assets/image.png");
       expect(image).to.be.instanceOf(HTMLImageElement);
       expect(image.width).to.equal(640);
       expect(image.height).to.equal(640);
     }).timeout(5000);
     it("throws on 404 errors", async () => {
       try {
-        await fetch.image("https://cdn.jsdelivr.net/npm/package-that-does-not-exist");
+        await fetch.image(URL_404);
         expect.fail("Expected fetch.image to throw an error for 404 response");
       } catch (error) {
         expect(error).to.be.instanceOf(Error);
@@ -261,14 +263,14 @@ describe("Network utilities", () => {
        * from Pixabay
        *  (https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=video&utm_content=169757)
        */
-      const video = await fetch.video("/src/web/assets/video.mp4");
+      const video = await fetch.video("/src/tests/web/assets/video.mp4");
       expect(video).to.be.instanceOf(HTMLVideoElement);
-      expect(video.width).to.equal(1280);
-      expect(video.height).to.equal(720);
+      expect(video.videoWidth).to.equal(1280);
+      expect(video.videoHeight).to.equal(720);
     }).timeout(10000);
     it("throws on 404 errors", async () => {
       try {
-        await fetch.video("https://cdn.jsdelivr.net/npm/package-that-does-not-exist");
+        await fetch.video(URL_404);
         expect.fail("Expected fetch.video to throw an error for 404 response");
       } catch (error) {
         expect(error).to.be.instanceOf(Error);

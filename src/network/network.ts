@@ -63,29 +63,36 @@ export const fetch: ExtendedFetch = Object.assign(
     },
 
     audio: async (...params: FetchParams) => {
-      const blob = await fetch.blob(...params);
-      const audio = new Audio();
-      audio.src = URL.createObjectURL(blob);
+      let url: string;
+      if (typeof params[0] === "string") url = params[0];
+      else if (params[0] instanceof URL) url = params[0].href;
+      else url = params[0].url;
+
+      const audio = new Audio(url);
       return loadMetadata(audio);
     },
 
     image: async (...params: FetchParams) => {
-      const blob = await fetch.blob(...params);
-      const url = URL.createObjectURL(blob);
+      let url: string;
+      if (typeof params[0] === "string") url = params[0];
+      else if (params[0] instanceof URL) url = params[0].href;
+      else url = params[0].url;
 
       const image = document.createElement("img");
       image.src = url;
 
       await image.decode();
-      URL.revokeObjectURL(url);
-
       return image;
     },
 
     video: async (...params: FetchParams) => {
-      const blob = await fetch.blob(...params);
+      let url: string;
+      if (typeof params[0] === "string") url = params[0];
+      else if (params[0] instanceof URL) url = params[0].href;
+      else url = params[0].url;
+
       const video = document.createElement("video");
-      video.src = URL.createObjectURL(blob);
+      video.src = url;
       return loadMetadata(video);
     },
   },
