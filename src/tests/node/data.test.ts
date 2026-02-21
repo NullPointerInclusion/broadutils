@@ -76,6 +76,30 @@ describe("array", () => {
     });
   });
 
+  describe("prepend", () => {
+    it("prepends elements from source arrays to target", () => {
+      const target = [1, 2];
+      const source1 = [3, 4];
+      const source2 = [5, 6];
+      const result = array.prepend(target, source1, source2);
+      expect(result).toBe(target); // Should mutate and return target
+      expect(result).toEqual([3, 4, 5, 6, 1, 2]);
+    });
+
+    it("prepends mixed types", () => {
+      const target: (number | string)[] = [1];
+      const source = ["a", "b"];
+      const result = array.prepend(target, source);
+      expect(result).toEqual(["a", "b", 1]);
+    });
+
+    it("handles empty sources", () => {
+      const target = [1];
+      const result = array.prepend(target, [], [2]);
+      expect(result).toEqual([2, 1]);
+    });
+  });
+
   describe("compare", () => {
     it("returns 0 for identical number arrays", () => {
       expect(array.compare([1, 2, 3], [1, 2, 3])).toBe(0);
@@ -249,6 +273,47 @@ describe("object", () => {
       const target = { a: 1, b: 2 };
       object.mergeInto(target, { b: 3 });
       expect(target).toEqual({ a: 1, b: 3 });
+    });
+  });
+
+  describe("deepFreeze", () => {
+    it("freezes a simple object", () => {
+      const obj = { a: 1 };
+      const frozen = object.deepFreeze(obj);
+      expect(frozen).toBe(obj);
+      expect(Object.isFrozen(frozen)).toBe(true);
+    });
+
+    it("freezes nested objects", () => {
+      const obj = { a: { b: 1 } };
+      object.deepFreeze(obj);
+      expect(Object.isFrozen(obj)).toBe(true);
+      expect(Object.isFrozen(obj.a)).toBe(true);
+    });
+
+    it("freezes arrays", () => {
+      const arr = [{ a: 1 }];
+      object.deepFreeze(arr);
+      expect(Object.isFrozen(arr)).toBe(true);
+      expect(Object.isFrozen(arr[0])).toBe(true);
+    });
+
+    it("handles circular references", () => {
+      const obj: any = { a: 1 };
+      obj.self = obj;
+      expect(() => object.deepFreeze(obj)).not.toThrow();
+      expect(Object.isFrozen(obj)).toBe(true);
+    });
+
+    it("prevents modification", () => {
+      const obj = { a: 1 };
+      object.deepFreeze(obj);
+      try {
+        (obj as any).a = 2;
+      } catch (e) {
+        // Strict mode might throw
+      }
+      expect(obj.a).toBe(1);
     });
   });
 });

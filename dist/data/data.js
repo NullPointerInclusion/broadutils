@@ -1,4 +1,3 @@
-import { nonNullable } from "../validate/validate.js";
 export const convertToDataUrl = async (source, mimeType) => {
     let blob;
     if (source instanceof Blob)
@@ -29,10 +28,12 @@ const arrayCompare = (a, b) => {
 };
 export const array = {
     append: (target, ...sources) => {
-        const result = target;
-        for (const source of sources)
-            result.push(...source);
-        return result;
+        target.push(...sources.flat());
+        return target;
+    },
+    prepend: (target, ...sources) => {
+        target.unshift(...sources.flat());
+        return target;
     },
     compare: (a, b, compareFn = arrayCompare) => {
         if (a.length < b.length)
@@ -59,6 +60,26 @@ export const array = {
     toReversed: (value) => [...value].reverse(),
 };
 export const object = {
+    deepFreeze: (value) => {
+        const stack = [value];
+        const encounterSet = new WeakSet();
+        do {
+            const current = stack.pop();
+            if (!(current && typeof current === "object"))
+                continue;
+            if (encounterSet.has(current))
+                continue; // circular reference
+            Object.freeze(current);
+            encounterSet.add(current);
+            if (Array.isArray(current))
+                stack.push(...current);
+            else
+                stack.push(...Object.values(current));
+        } while (stack.length);
+        return value;
+    },
+    merge: (...sources) => Object.assign({}, ...sources),
+    mergeInto: (...sources) => Object.assign(sources[0], ...sources),
     omit: (obj, keys) => {
         const result = {};
         const toOmit = new Set(keys);
@@ -75,8 +96,6 @@ export const object = {
             result[key] = obj[key];
         return result;
     },
-    merge: (...sources) => Object.assign({}, ...sources),
-    mergeInto: (...sources) => Object.assign(sources[0], ...sources),
 };
 export const string = {
     reverse: (inputStr) => inputStr.split("").reverse().join(""),

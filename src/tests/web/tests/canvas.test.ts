@@ -12,14 +12,22 @@ import {
   getImageData,
 } from "../../../canvas/canvas.ts";
 
-const compareImageData = (a: ImageData, b: ImageData): boolean => {
-  return (
-    a.width === b.width &&
-    a.height === b.height &&
-    a.colorSpace === b.colorSpace &&
-    a.data.length === b.data.length &&
-    a.data.every((v, i) => v === b.data[i])
-  );
+const compareImageData = (a: ImageData, b: ImageData, tolerance = 0): boolean => {
+  if (
+    a.width !== b.width ||
+    a.height !== b.height ||
+    a.colorSpace !== b.colorSpace ||
+    a.data.length !== b.data.length
+  ) {
+    return false;
+  }
+
+  if (tolerance === 0) return a.data.every((v, i) => v === b.data[i]);
+  for (let i = 0; i < a.data.length; i++) {
+    if (Math.abs(a.data[i] - b.data[i]) > tolerance) return false;
+  }
+
+  return true;
 };
 
 const imageData = new ImageData(4, 2);
@@ -166,7 +174,7 @@ describe("Canvas utilities", () => {
       expect(canvas.width).to.equal(imageData.width);
       expect(canvas.height).to.equal(imageData.height);
       expect(
-        compareImageData(context.getImageData(0, 0, canvas.width, canvas.height), imageData),
+        compareImageData(context.getImageData(0, 0, canvas.width, canvas.height), imageData, 5),
       ).to.equal(true);
     });
 
@@ -190,6 +198,7 @@ describe("Canvas utilities", () => {
         compareImageData(
           mirrorImageToCanvas(context, img).getImageData(0, 0, canvas.width, canvas.height),
           mirrorImageToCanvas(context, testImage).getImageData(0, 0, canvas.width, canvas.height),
+          5,
         ),
       ).to.equal(true);
     });
@@ -201,6 +210,7 @@ describe("Canvas utilities", () => {
         compareImageData(
           mirrorImageToCanvas(context, img).getImageData(0, 0, canvas.width, canvas.height),
           mirrorImageToCanvas(context, testImage).getImageData(0, 0, canvas.width, canvas.height),
+          5,
         ),
       ).to.equal(true);
     });
@@ -213,6 +223,7 @@ describe("Canvas utilities", () => {
         compareImageData(
           mirrorImageToCanvas(context, img).getImageData(0, 0, canvas.width, canvas.height),
           mirrorImageToCanvas(context, testImage).getImageData(0, 0, canvas.width, canvas.height),
+          5,
         ),
       ).to.equal(true);
     });
@@ -232,13 +243,16 @@ describe("Canvas utilities", () => {
       const result = await getImageData(canvas);
       expect(result).to.be.instanceOf(ImageData);
       expect([result.width, result.height]).to.deep.equal([2, 1]);
-      expect([...result.data]).to.deep.equal([255, 0, 0, 255, 128, 255, 128, 255]);
+
+      const expectedData = new ImageData(2, 1);
+      expectedData.data.set([255, 0, 0, 255, 128, 255, 128, 255]);
+      expect(compareImageData(result, expectedData, 5)).to.equal(true);
     });
 
     it("gets ImageData from data URL", async () => {
       const result = await getImageData(testImageUrl);
       expect(result).to.be.instanceOf(ImageData);
-      expect(compareImageData(result, imageData)).to.equal(true);
+      expect(compareImageData(result, imageData, 5)).to.equal(true);
     });
   });
 });

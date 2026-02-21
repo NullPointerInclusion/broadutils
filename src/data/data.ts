@@ -1,4 +1,4 @@
-import { nonNullable } from "../validate/validate.ts";
+import type { DeepFrozen } from "../types/types.ts";
 import type { ArrayUtils, DataUrlSource, ObjectUtils, StringUtils } from "./types.ts";
 
 export const convertToDataUrl = async (
@@ -42,9 +42,15 @@ export const array: ArrayUtils = {
     target: T,
     ...sources: Appended[][]
   ): [...T, ...Appended[]] => {
-    const result = target as unknown as [...T, ...Appended[]];
-    for (const source of sources) result.push(...source);
-    return result;
+    target.push(...sources.flat());
+    return target as unknown as [...T, ...Appended[]];
+  },
+  prepend: <T extends unknown[], Prepended>(
+    target: T,
+    ...sources: Prepended[][]
+  ): [...Prepended[], ...T] => {
+    target.unshift(...sources.flat());
+    return target as unknown as [...Prepended[], ...T];
   },
   compare: <T, U>(a: T[], b: U[], compareFn = arrayCompare): -1 | 0 | 1 => {
     if (a.length < b.length) return -1;
@@ -68,6 +74,27 @@ export const array: ArrayUtils = {
 };
 
 export const object: ObjectUtils = {
+  deepFreeze: (value) => {
+    const stack: any[] = [value];
+    const encounterSet: WeakSet<object> = new WeakSet();
+
+    do {
+      const current = stack.pop();
+      if (!(current && typeof current === "object")) continue;
+
+      if (encounterSet.has(current)) continue; // circular reference
+      
+      Object.freeze(current);
+      encounterSet.add(current);
+      
+      if (Array.isArray(current)) stack.push(...current);
+      else stack.push(...Object.values(current));
+    } while (stack.length);
+
+    return value as DeepFrozen<typeof value>;
+  },
+  merge: (...sources: any[]) => Object.assign({}, ...sources),
+  mergeInto: (...sources: any[]) => Object.assign(sources[0], ...sources),
   omit: <T extends {}, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> => {
     const result = {} as Omit<T, K>;
     const toOmit = new Set(keys);
@@ -82,8 +109,6 @@ export const object: ObjectUtils = {
     for (const key of keys) result[key] = obj[key];
     return result;
   },
-  merge: (...sources: any[]) => Object.assign({}, ...sources),
-  mergeInto: (...sources: any[]) => Object.assign(sources[0], ...sources),
 };
 
 export const string: StringUtils = {

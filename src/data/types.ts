@@ -1,4 +1,4 @@
-import type { IfExtendsThenElse, Nullish, OrArray } from "../types/types.ts";
+import type { DeepFrozen, IfExtendsThenElse, Nullish, OrArray } from "../types/types.ts";
 
 export type DataUrlSource = OrArray<Blob | ArrayBuffer | ArrayBufferView<ArrayBuffer>>;
 
@@ -15,6 +15,18 @@ export interface ArrayUtils {
     ): [...T, ...A1, ...A2, ...A3];
     <T extends unknown[], Appended>(target: T, ...sources: Appended[]): [...T, ...Appended[]];
   };
+  prepend: {
+    <T extends unknown[], P1 extends unknown[]>(target: T, ...sources: [P1]): [...P1, ...T];
+    <T extends unknown[], P1 extends unknown[], P2 extends unknown[]>(
+      target: T,
+      ...sources: [P1, P2]
+    ): [...P1, ...P2, ...T];
+    <T extends unknown[], P1 extends unknown[], P2 extends unknown[], P3 extends unknown[]>(
+      target: T,
+      ...sources: [P1, P2, P3]
+    ): [...P1, ...P2, ...P3, ...T];
+    <T extends unknown[], Prepended>(target: T, ...sources: Prepended[]): [...Prepended[], ...T];
+  };
   compare: <T, U>(a: T[], b: U[], compareFn?: (a: T, b: U) => number) => -1 | 0 | 1;
   padStart: <T extends unknown[]>(value: T, length: number, padWith?: unknown) => T;
   padEnd: <T extends unknown[]>(value: T, length: number, padWith?: unknown) => T;
@@ -22,8 +34,7 @@ export interface ArrayUtils {
 }
 
 export interface ObjectUtils {
-  omit<T extends {}, K extends keyof T>(obj: T, keys: K[]): Omit<T, K>;
-  pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K>;
+  deepFreeze<T extends object>(obj: T): DeepFrozen<T>;
   merge<T, U, V, W>(
     ...sources: [T?, U?, V?, W?]
   ): IfExtendsThenElse<T, Nullish, {}, T> &
@@ -38,6 +49,8 @@ export interface ObjectUtils {
     IfExtendsThenElse<V, Nullish, {}, V> &
     IfExtendsThenElse<W, Nullish, {}, W>;
   mergeInto(...sources: unknown[]): unknown;
+  omit<T extends {}, K extends keyof T>(obj: T, keys: K[]): Omit<T, K>;
+  pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K>;
 }
 
 export interface StringUtils {
